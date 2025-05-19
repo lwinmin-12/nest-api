@@ -6,7 +6,7 @@ import { PrismaService } from "../prisma/prisma.service";
 export class UserService {
     constructor(private prismaService : PrismaService) {}
 
-    async updateUser(id : string , firstName : string , lastName : string) {
+    async updateUser(id : string , dto) {
         const checkUser = await this.prismaService.user.findUnique({
             where: {
                 id
@@ -20,8 +20,7 @@ export class UserService {
                 id
             },
             data: {
-                firstName,
-                lastName
+                ...dto
             }
         });
         delete (user as any).hash;

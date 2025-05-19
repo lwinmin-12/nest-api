@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { JwtGuard } from 'src/auth/guard';
+import e, { Request } from 'express';
+import { JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
-import { UserDto } from 'src/auth/dto/user.dto';
+import { UserDto } from '../auth/dto/user.dto';
+import { EditUserDto } from 'src/auth/dto';
 
 @Controller('users')
 export class UserController {
@@ -15,12 +16,12 @@ export class UserController {
 
     @Patch('me')
     @UseGuards(JwtGuard)
-    updateMe(@Req() req : Request ,  @Body('firstName') firstName : string , @Body('lastName') lastName : string) {
+    updateMe(@Req() req : Request ,  @Body('firstName') dto : EditUserDto) {
        
         if (!req.user) {
             throw new Error('User not found in request');
         }
 
-        return this.userService.updateUser((req.user as UserDto).id, firstName, lastName);
+        return this.userService.updateUser((req.user as UserDto).id, dto);
     }
 }

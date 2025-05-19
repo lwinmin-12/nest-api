@@ -53,7 +53,7 @@ describe('App e2e test', () => {
           .post('/auth/signup')
           .withBody({ email: dto.email })
           .expectStatus(400);
-      }); 
+      });
 
       it('should throw if both empty', () => {
         return pactum
@@ -73,8 +73,7 @@ describe('App e2e test', () => {
     });
 
     describe('signin', () => {
-
-       const dto: AuthDto = {
+      const dto: AuthDto = {
         email: 'test@gmail.com',
         password: 'tester',
       };
@@ -93,7 +92,7 @@ describe('App e2e test', () => {
           .post('/auth/signup')
           .withBody({ email: dto.email })
           .expectStatus(400);
-      }); 
+      });
 
       it('should throw if both empty', () => {
         return pactum
@@ -108,43 +107,52 @@ describe('App e2e test', () => {
           .post('/auth/signin')
           .withBody(dto)
           .expectStatus(200)
-          .stores('userAt' , 'access_token');
+          .stores('userAt', 'access_token');
       });
     });
   });
 
   describe('user', () => {
     describe('getMe', () => {
-
       it('should return error if not logged in', () => {
-        return pactum
-          .spec()
-          .get('/users/me')
-          .expectStatus(401);
+        return pactum.spec().get('/users/me').expectStatus(401);
       });
 
       it('should get current user', () => {
         return pactum
           .spec()
           .get('/users/me')
-          .withHeaders({ Authorization : 'Bearer $S{userAt}' })
-          .expectStatus(200)
+          .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+          .expectStatus(200);
       });
+    });
 
-    })
-
-    // describe('editUser', () => {})
-  })
+    describe('editUser', () => {
+      it('should edit user', () => {
+        return pactum
+          .spec()
+          .patch('/users/me')
+          .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+          .withBody({
+            firstName: 'John',
+            lastName: 'Doe',
+          })
+          .expectStatus(200)
+          .expectBodyContains('John')
+          .expectBodyContains('Doe')
+      });
+    });
+  });
 
   describe('bookmark', () => {
-    describe('createBookmark', () => {})
+    describe('createBookmark', () => {});
 
-    describe('getBookmarks', () => {})
+    describe('getBookmarks', () => {});
 
-    describe('getBookmarkById',() => {})
+    describe('getBookmarkById', () => {});
 
-    describe('editBookmarkById', () => {})
+    describe('editBookmarkById', () => {});
 
-    describe('deleteBookmarkById', () => {})
-  })
+    describe('deleteBookmarkById', () => {});
+  });
 });
